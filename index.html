@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Play Array</title>
+
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <!--  If the order of the the following two lines are switched, script does not recognize SeisArray -->
+
+</head>
+
+<body>
+    <h3>Play Array<br></h3>
+    <address>
+        <span>by Alysha Armstrong <br></span>
+        <span> alysha.armstrong@utah.edu<br></span>
+    </address>
+
+    <div class="map">
+
+    </div>
+    <!--  If the order of the the following two lines are switched, script does not recognize SeisArray -->
+    <!-- have to put these scripts in the body or they run before the DOM finishes rendering and 
+    d3.select can't find anything. Not sure why didn't do this in viz class?-->
+    <script src="SeisArray.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
