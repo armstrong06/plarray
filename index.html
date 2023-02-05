@@ -15,15 +15,28 @@
         <span>by Alysha Armstrong <br></span>
         <span> alysha.armstrong@utah.edu<br></span>
     </address>
-
-    <div class="map">
-
-    </div>
+    
+    <!-- <form>
+        <label for="slowness-textfield">Enter slowness values:</label>
+        <input type="text" id="slowness-textfieldx" value="Sx" />
+        <input type="text" id="slowness-textfieldy" value="Sy" />
+        <input type="button" value="Run" id="runButton">
+    </form> -->
     <!--  If the order of the the following two lines are switched, script does not recognize SeisArray -->
     <!-- have to put these scripts in the body or they run before the DOM finishes rendering and 
     d3.select can't find anything. Not sure why didn't do this in viz class?-->
     <script src="SeisArray.js"></script>
     <script src="script.js"></script>
+
+    <!-- <script>
+
+        // we identify the button and add the function to be connected dynamically
+        document.getElementById("runButton").onclick = function () {
+            //alert("Aaah, you chose me, button 2!");
+            console.log(d3.select("#slowness-textfieldx").node().value)
+        };
+
+    </script> -->
 </body>
 
 </html>

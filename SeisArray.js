@@ -10,6 +10,20 @@ class SeisArray{
     }
 
     renderArray(){
+        const form = d3.select("body").append("form")
+        form.append("label").text("Enter Slowness: ")
+            .attr("for", "slowness-textfield")
+        form.append("input").attr("type", "text")
+            .attr("value", "Sx")
+            .attr("id", "slowness-textfieldx")
+        form.append("input").attr("type", "text")
+            .attr("value", "Sy")
+            .attr("id", "slowness-textfieldy")
+        form.append("input").attr("type", "button")
+            .attr("value", "Run")
+            .attr("id", "runButton")
+            .on("click", this.runOnClick)
+
         const svg = d3.select("body").append("svg")
             .attr("width", this.width)
             .attr("height", this.height)
@@ -37,4 +51,10 @@ class SeisArray{
         return stations
     }
 
+    runOnClick(){
+        console.log(d3.selectAll("#slowness-textfieldx").node().value)
+        console.log(d3.selectAll("#slowness-textfieldy").node().value)
+        d3.selectAll("circle")
+            .each(d => console.log(d.x, d.y))
+    }
 }
