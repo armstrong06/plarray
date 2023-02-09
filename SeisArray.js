@@ -55,6 +55,19 @@ class SeisArray{
 
         svg.select("#stat".concat(this.reference_station))
             .attr("fill", "red")
+
+        this.myColor = d3.scaleSequential().domain([this.max_td*-1, this.max_td])
+                .interpolator(d3.interpolateRdBu);
+
+        const canvas = d3.select("body").append("canvas")
+        canvas.attr("width", this.width)
+            .attr("height", 25)
+            .style("border", "1px solid black")
+        const context = canvas.node().getContext("2d");
+        for (let i=-100; i < 100; i=i++){
+            context.fillStyle = this.myColor(this.max_td/i)
+            context.fillRect(0, 0, this.width/200, canvas.node().height)
+        }
     }
 
     initializeStations(){
