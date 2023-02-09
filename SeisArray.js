@@ -26,9 +26,22 @@ class SeisArray{
             .on("click", function(){
                 var s_x = d3.selectAll("#slowness-textfieldx").node().value
                 var s_y = d3.selectAll("#slowness-textfieldy").node().value
-        
+
                 d3.selectAll("circle")
-                .each(d => console.log(that.delayTime(d.x, d.y, s_x, s_y)))
+                .each(function(d){
+                    var val = that.delayTime(d.x, d.y, s_x, s_y)
+                    d3.select(this).attr("value", val)
+                })
+
+                var myColor = d3.scaleSequential().domain([-11000, 11000])
+                    .interpolator(d3.interpolateRdBu);
+
+                d3.selectAll("circle")
+                    .each(function(d){
+                        var val = that.delayTime(d.x, d.y, s_x, s_y)
+                        d3.select(this).attr("value", val)
+                        .attr("fill", d => myColor(val))
+                    })
             })
             //.on("click", this.runOnClick)
 
