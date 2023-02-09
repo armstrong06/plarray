@@ -27,18 +27,12 @@ class SeisArray{
                 var s_x = d3.selectAll("#slowness-textfieldx").node().value
                 var s_y = d3.selectAll("#slowness-textfieldy").node().value
 
-                d3.selectAll("circle")
-                .each(function(d){
-                    var val = that.delayTime(d.x, d.y, s_x, s_y)
-                    d3.select(this).attr("value", val)
-                })
-
-                var myColor = d3.scaleSequential().domain([-11000, 11000])
+                var myColor = d3.scaleSequential().domain([that.max_td*-1, that.max_td])
                     .interpolator(d3.interpolateRdBu);
 
                 d3.selectAll("circle")
                     .each(function(d){
-                        var val = that.delayTime(d.x, d.y, s_x, s_y)
+                        var val = (d.rx*s_x)+(d.ry*s_y)
                         d3.select(this).attr("value", val)
                         .attr("fill", d => myColor(val))
                     })
@@ -59,39 +53,54 @@ class SeisArray{
           .attr("r", 10)
           .attr("id", d=>'stat'.concat(d.index))
 
-        var ref_stat = svg.select("#stat".concat(this.reference_station))
-        ref_stat.attr("fill", "red")
-
-        this.ref_x = ref_stat.attr("cx")
-        this.ref_y = ref_stat.attr("cy")
+        svg.select("#stat".concat(this.reference_station))
+            .attr("fill", "red")
     }
 
     initializeStations(){
-        var stations = d3.range(this.n_stations).map(i =>({
-            x: (this.width/this.n_stations/2)+(this.width/this.n_stations)*i,
-            y: this.height/2,
-            index: i
-        }))
+        this.ref_x = (this.width/this.n_stations/2)+(this.width/this.n_stations)*this.reference_station
+        this.ref_y = this.height/2
+        var that = this
+        // var stations = d3.range(this.n_stations).map(i =>({
+        //     x: (this.width/this.n_stations/2)+(this.width/this.n_stations)*i,
+        //     y: this.height/2,
+        //     index: i,
+        // }))
+
+        var max_r = 0;
+        var max_theta = 0;
+        var max_rx = 0;
+        var max_ry = 0;
+        var stations = d3.range(this.n_stations).map(function(i) {
+            var x = (that.width/that.n_stations/2)+(that.width/that.n_stations)*i
+            var y = that.height/2
+            var rx = x - that.ref_x
+            var ry = y - that.ref_y
+            var r = Math.sqrt(Math.pow(rx, 2)+Math.pow(ry, 2))
+            var theta = Math.atan2(rx, ry)
+
+            if (r > max_r){
+                max_r = r
+                max_theta = theta
+                max_rx = rx
+                max_ry = ry
+            }
+
+            return {x: x,
+                    y: y,
+                    index: i,
+                    rx: rx,
+                    ry: ry,
+                    r: r,
+                    theta: theta
+            }
+        })
+
+        // Compute the maximum time delay given the array geometry
+        var max_sx = max_theta*180/Math.PI
+        var max_sy = 90 - max_sx
+        this.max_td = max_rx*max_sx+max_ry*max_sy
 
         return stations
-    }
-
-    // Stopped using this function because there was no way to pass it the "that"
-    // value, so I could not call delayTime. Could move delayTime inside this function
-    // but then I also need to change the way of getting this.ref_x and ref_y
-    // runOnClick(that){
-    //     const s_x = d3.selectAll("#slowness-textfieldx").node().value
-    //     const s_y = d3.selectAll("#slowness-textfieldy").node().value
-
-    //     d3.selectAll("circle")
-    //         .each(d => console.log(that.delayTime(d.x, d.y, s_x, s_y)))
-    // }   
-    
-    delayTime(x, y, s_x, s_y){
-        const r_x = x - this.ref_x
-        const r_y = y - this.ref_y
-        
-        return (r_x*s_x)+(r_y*s_y)
-        
     }
 }
