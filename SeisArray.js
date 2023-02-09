@@ -59,16 +59,38 @@ class SeisArray{
         this.myColor = d3.scaleSequential().domain([this.max_td*-1, this.max_td])
                 .interpolator(d3.interpolateRdBu);
 
-        const canvas = d3.select("body").append("canvas")
+        // Set up color bar
+        const cb_div = d3.select("body").append("div")
+        const canvas = cb_div.append("canvas")
         canvas.attr("width", this.width)
-            .attr("height", 25)
-            .style("border", "1px solid black")
-        const context = canvas.node().getContext("2d");
-        for (let i=-100; i < 100; i=i++){
-            context.fillStyle = this.myColor(this.max_td/i)
-            context.fillRect(0, 0, this.width/200, canvas.node().height)
+             .attr("height", 25)
+             .style("border", "1px solid black")
+        
+        const context= canvas.node().getContext("2d");
+        context.fillStyle = "white"
+        context.fillRect(0, 0, canvas.node().width, canvas.node().height)
+        
+        // Fill in the color bar - first half
+        var bwid = this.width/21
+        for (let i=10; i > 0; i+=-1){
+            context.fillStyle = this.myColor(-1*i*this.max_td/10)
+            context.fillRect((10-i)*bwid, 0, 
+            (10-i)*bwid+bwid, canvas.node().height)
         }
-    }
+        
+        // Fill in the color bar - middle + second half
+        var start = 9*bwid+bwid 
+        for (let i=0; i < 11; i+=1){
+            context.fillStyle = this.myColor(i*this.max_td/10)
+            context.fillRect(start+i*bwid, 0, start+i*bwid+bwid, canvas.node().height)
+        }
+
+        var label_svg = d3.select("body").append("svg")
+        label_svg.attr("width", this.width).attr("height", 40)
+        label_svg.append("text").text("Min. Time Shift").attr("x", 0).attr("y", 20)
+        label_svg.append("text").text("Max. Time Shift").attr("x", this.width-110).attr("y", 20)
+
+     }
 
     initializeStations(){
         this.ref_x = (this.width/this.n_stations/2)+(this.width/this.n_stations)*this.reference_station
