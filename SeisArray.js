@@ -37,15 +37,23 @@ class SeisArray{
                 var s_x = d3.selectAll("#slowness-textfieldx").node().value
                 var s_y = d3.selectAll("#slowness-textfieldy").node().value
 
+                var alert =  false
                 // Limit the slowness values
-                if (s_x > that.max_slowness){
-                    s_x = that.max_slowness
-                    d3.selectAll("#slowness-textfieldx").node().value = 20
+                if (Math.abs(s_x) > that.max_slowness){
+                    s_x = Math.sign(s_x)*that.max_slowness
+                    d3.selectAll("#slowness-textfieldx").node().value = s_x
+                    alert = true
                 }
 
-                if (s_y > that.max_slowness){
-                    s_y = that.max_slowness 
-                    d3.selectAll("#slowness-textfieldy").node().value = 20
+                if (Math.abs(s_y) > that.max_slowness){
+                    s_y = Math.sign(s_y)*that.max_slowness 
+                    d3.selectAll("#slowness-textfieldy").node().value = s_y
+                    alert = true
+                }
+
+                // popup about allowed bounds and reset 
+                if (alert){
+                    window.alert("Sx and Sy must be in range [-20 s/deg, 20 s/deg]. Setting to max. ")
                 }
 
                 var myColor = d3.scaleSequential().domain([that.max_td*-1, that.max_td])
